@@ -9,35 +9,35 @@ const int CLIENT_TIMEOUT_VALUE = 10;
 
 const char* CLIENT_COMMANDS[] =
 {
-   "#AA",
-   "#DA",
-   "#AP",
-   "#DP",
-   "$HO",
-   "#TM",
-   "#RW",
-   "@",
-   "%",
-   "$PI",
-   "$PO",
-   "$HA",
-   "$FP",
-   "#SB",
-   "#PC",
-   "#WX",
-   "#CD",
-   "#WD",
-   "#TD",
-   "$C?",
-   "$CI",
-   "$AX",
-   "$AR",
-   "$ER",
-   "$CQ",
-   "$CR",
-   "$!!",
-   "#DL",
-   nullptr
+	"#AA",
+	"#DA",
+	"#AP",
+	"#DP",
+	"$HO",
+	"#TM",
+	"#RW",
+	"@",
+	"%",
+	"$PI",
+	"$PO",
+	"$HA",
+	"$FP",
+	"#SB",
+	"#PC",
+	"#WX",
+	"#CD",
+	"#WD",
+	"#TD",
+	"$C?",
+	"$CI",
+	"$AX",
+	"$AR",
+	"$ER",
+	"$CQ",
+	"$CR",
+	"$!!",
+	"#DL",
+	nullptr
 };
 
 
@@ -56,9 +56,10 @@ EClientCommand CClientServer::GetCommand(const std::string& InString, int& OutCm
 	return EClientCommand::CC_NOTHING;
 }
 
-void CClientServer::HandleRead(const con_handle_t& InConnectionHandle, boost::system::error_code const& InError, size_t InBytesTransferred)
+void CClientServer::HandleRead(const con_handle_t& InConnectionHandle, boost::system::error_code const& InError,
+                               size_t InBytesTransferred)
 {
-	if (InBytesTransferred > 0) 
+	if (InBytesTransferred > 0)
 	{
 		std::istream Is(&InConnectionHandle->read_buffer);
 		const std::time_t Result = std::time(nullptr);
@@ -71,17 +72,18 @@ void CClientServer::HandleRead(const con_handle_t& InConnectionHandle, boost::sy
 
 	if (InConnectionHandle->bWantsToRemove)
 	{
-		InConnectionHandle->socket.shutdown(boost::asio::ip::tcp::socket::shutdown_both);
+		InConnectionHandle->socket.shutdown(tcp::socket::shutdown_both);
 		InConnectionHandle->socket.close();
 		HandleClientDisconnect(InConnectionHandle);
 		return;
 	}
 
-	if (!InError) 
+	if (!InError)
 	{
 		DoAsyncRead(InConnectionHandle);
 	}
-	else {
+	else
+	{
 		std::cerr << "We had an error: " << InError.message() << std::endl;
 		HandleClientDisconnect(InConnectionHandle);
 	}
@@ -172,10 +174,11 @@ void CClientServer::HandleMessage(const con_handle_t& InConnectionHandle, const 
 			continue;
 		}
 		std::string S1 = "#TM";
-		const std::string S2 = boost::str(boost::format("%s:%s:%s\n")  % InConnectionHandle->User->Callsign % Strings[1] % Strings[2]);
+		const std::string S2 = str(
+			boost::format("%s:%s:%s\n") % InConnectionHandle->User->Callsign % Strings[1] % Strings[2]);
 		S1.append(S2);
 		const std::shared_ptr<std::basic_string<char>> Buff = std::make_shared<std::string>(S1);
-		boost::asio::write(ClientConn.socket, boost::asio::buffer(*Buff));
+		write(ClientConn.socket, boost::asio::buffer(*Buff));
 		break;
 	}
 }
@@ -233,12 +236,11 @@ void CClientServer::AddController(const con_handle_t& InConnectionHandle, const 
 
 		SendServerMessage(InConnectionHandle, NewUser, "Welcome to Flight Sim Server 1.0 Beta");
 		SendServerMessage(InConnectionHandle, NewUser, "Please note bugs will exist!");
-
 	}
-
 }
 
-void CClientServer::ShowErrorAndDisconnect(const con_handle_t& InConnectionHandle, const std::string& Callsign, EClientError Error)
+void CClientServer::ShowErrorAndDisconnect(const con_handle_t& InConnectionHandle, const std::string& Callsign,
+                                           EClientError Error)
 {
 	std::string ErrMessage;
 	switch (Error)
@@ -298,12 +300,12 @@ void CClientServer::ShowErrorAndDisconnect(const con_handle_t& InConnectionHandl
 	}
 
 
-	std::string S2 = boost::str(boost::format("#TMserver:%s:%s\r\n") % Callsign % ErrMessage);
+	std::string S2 = str(boost::format("#TMserver:%s:%s\r\n") % Callsign % ErrMessage);
 	std::shared_ptr<std::basic_string<char>> Buff = std::make_shared<std::string>(S2);
-	auto Handler = boost::bind(&CClientServer::HandleWrite, shared_from_this(), InConnectionHandle, nullptr, nullptr, Buff, boost::asio::placeholders::error);
-	boost::asio::async_write(InConnectionHandle->socket, boost::asio::buffer(*Buff), Handler);
+	auto Handler = boost::bind(&CClientServer::HandleWrite, shared_from_this(), InConnectionHandle, nullptr, nullptr,
+	                           Buff, boost::asio::placeholders::error);
+	async_write(InConnectionHandle->socket, boost::asio::buffer(*Buff), Handler);
 	InConnectionHandle->bWantsToRemoveAfterWrite = true;
-
 }
 
 void CClientServer::ProcessControllerPosition(const con_handle_t& InConnectionHandle, StringVec& InPositionData)
@@ -329,10 +331,12 @@ void CClientServer::ProcessControllerPosition(const con_handle_t& InConnectionHa
 			continue;
 		}
 		std::string Prefix = "%";
-		const std::string S2 = boost::str(boost::format("%s:%s:%s:%s:%s:%s:%s\r\n") % InPositionData[0] % InPositionData[1] % InPositionData[2] % InPositionData[3] % InPositionData[4] % InPositionData[5] % InPositionData[6]);
+		const std::string S2 = str(
+			boost::format("%s:%s:%s:%s:%s:%s:%s\r\n") % InPositionData[0] % InPositionData[1] % InPositionData[2] %
+			InPositionData[3] % InPositionData[4] % InPositionData[5] % InPositionData[6]);
 		Prefix.append(S2);
 		std::shared_ptr<std::basic_string<char>> Buff = std::make_shared<std::string>(Prefix);
-		boost::asio::write(Conn.socket, boost::asio::buffer(*Buff));
+		write(Conn.socket, boost::asio::buffer(*Buff));
 	}
 }
 
@@ -343,11 +347,13 @@ void CClientServer::DoAsyncRead(const con_handle_t& InConnectionHandle)
 		HandleClientDisconnect(InConnectionHandle);
 		return;
 	}
-	auto Handler = boost::bind(&CClientServer::HandleRead, shared_from_this(), InConnectionHandle, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred);
-	boost::asio::async_read_until(InConnectionHandle->socket, InConnectionHandle->read_buffer, "\n", Handler);
+	auto Handler = boost::bind(&CClientServer::HandleRead, shared_from_this(), InConnectionHandle,
+	                           boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred);
+	async_read_until(InConnectionHandle->socket, InConnectionHandle->read_buffer, "\n", Handler);
 }
 
-void CClientServer::SendServerMessage(const con_handle_t& InConnectionHandle, CUser* InTargetUser, const std::string& InMessage)
+void CClientServer::SendServerMessage(const con_handle_t& InConnectionHandle, CUser* InTargetUser,
+                                      const std::string& InMessage)
 {
 	if (!InTargetUser)
 	{
@@ -373,20 +379,21 @@ void CClientServer::SendServerMessage(const con_handle_t& InConnectionHandle, CU
 		return;
 	}
 
-	std::string S2 = boost::str(boost::format("#TMserver:%s:%s\r\n") % InTargetUser->Callsign % InMessage);
+	std::string S2 = str(boost::format("#TMserver:%s:%s\r\n") % InTargetUser->Callsign % InMessage);
 	const std::shared_ptr<std::basic_string<char>> Buff = std::make_shared<std::string>(S2);
-	auto Handler = boost::bind(&CClientServer::HandleWrite, shared_from_this(), InConnectionHandle, InConnectionHandle->User, TargetConn->User, Buff, boost::asio::placeholders::error);
-	boost::asio::async_write(TargetConn->socket, boost::asio::buffer(*Buff), Handler);
+	auto Handler = boost::bind(&CClientServer::HandleWrite, shared_from_this(), InConnectionHandle,
+	                           InConnectionHandle->User, TargetConn->User, Buff, boost::asio::placeholders::error);
+	async_write(TargetConn->socket, boost::asio::buffer(*Buff), Handler);
 }
 
 void CClientServer::HandleWrite(const con_handle_t& InConnectionHandle, CUser* SrcUser, CUser* TargetUser,
                                 const MsgBuffer& InMessageBuffer, boost::system::error_code const& InError)
 {
-	if (!InError) 
+	if (!InError)
 	{
 		std::cout << "Finished sending message\n";
 	}
-	else 
+	else
 	{
 		std::cerr << "We had an error: " << InError.message() << std::endl;
 	}
@@ -397,17 +404,18 @@ void CClientServer::HandleWrite(const con_handle_t& InConnectionHandle, CUser* S
 	}
 }
 
-void CClientServer::HandleWrite(const con_handle_t& InConnectionHandle, const MsgBuffer& MessageBuffer, boost::system::error_code const & Err)
+void CClientServer::HandleWrite(const con_handle_t& InConnectionHandle, const MsgBuffer& MessageBuffer,
+                                boost::system::error_code const& Err)
 {
-	if (!Err) 
+	if (!Err)
 	{
 		std::cout << "Finished sending message\n";
-		if (InConnectionHandle->socket.is_open()) 
+		if (InConnectionHandle->socket.is_open())
 		{
 			// Write completed successfully and connection is open
 		}
 	}
-	else 
+	else
 	{
 		std::cerr << "We had an error: " << Err.message() << std::endl;
 		HandleClientDisconnect(InConnectionHandle);
@@ -419,7 +427,7 @@ void CClientServer::HandleWrite(const con_handle_t& InConnectionHandle, const Ms
 	}
 }
 
-void CClientServer::HandleAccept(const con_handle_t& InConnectionHandle, boost::system::error_code const & InError)
+void CClientServer::HandleAccept(const con_handle_t& InConnectionHandle, boost::system::error_code const& InError)
 {
 	if (InConnectionHandle->bWantsToRemove)
 	{
@@ -427,7 +435,7 @@ void CClientServer::HandleAccept(const con_handle_t& InConnectionHandle, boost::
 		return;
 	}
 
-	if (!InError) 
+	if (!InError)
 	{
 		CurrentClientIndex++;
 		const std::time_t Result = std::time(nullptr);
@@ -445,7 +453,7 @@ void CClientServer::HandleAccept(const con_handle_t& InConnectionHandle, boost::
 
 		DoAsyncRead(InConnectionHandle);
 	}
-	else 
+	else
 	{
 		std::cerr << "We had an error: " << InError.message() << std::endl;
 		HandleClientDisconnect(InConnectionHandle);
@@ -464,15 +472,16 @@ void CClientServer::StartAccept()
 {
 	con_handle_t ConHandle = ClientConnections.emplace(ClientConnections.begin(), ClientIoService);
 
-	auto Handler = boost::bind(&CClientServer::HandleAccept, shared_from_this(), ConHandle, boost::asio::placeholders::error);
+	auto Handler = boost::bind(&CClientServer::HandleAccept, shared_from_this(), ConHandle,
+	                           boost::asio::placeholders::error);
 	ClientAcceptor.async_accept(ConHandle->socket, Handler);
 }
 
 void CClientServer::Listen(const uint16_t InListenPort)
 {
-	const auto Endpoint = boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), InListenPort);
+	const auto Endpoint = tcp::endpoint(tcp::v4(), InListenPort);
 	ClientAcceptor.open(Endpoint.protocol());
-	ClientAcceptor.set_option(boost::asio::ip::tcp::acceptor::reuse_address(true));
+	ClientAcceptor.set_option(tcp::acceptor::reuse_address(true));
 	ClientAcceptor.bind(Endpoint);
 	ClientAcceptor.listen();
 	StartAccept();
@@ -480,7 +489,6 @@ void CClientServer::Listen(const uint16_t InListenPort)
 
 void CClientServer::Poll()
 {
-
 	ClientIoService.poll();
 
 
@@ -500,15 +508,15 @@ void CClientServer::Poll()
 		}
 		Index++;
 	}
-
-
 }
 
 void CClientServer::ShowIdleDisconnect(const con_handle_t& Conn)
 {
-		std::string S2 = boost::str(boost::format("#TMserver:%s:Disconnected for being idle. Please do not idle.\r\n") % Conn->User->Callsign);
-		const std::shared_ptr<std::basic_string<char>> Buff = std::make_shared<std::string>(S2);
-		auto Handler = boost::bind(&CClientServer::HandleWrite, shared_from_this(), Conn, Conn->User, Conn->User, Buff, boost::asio::placeholders::error);
-		boost::asio::async_write(Conn->socket, boost::asio::buffer(*Buff), Handler);
-		Conn->bWantsToRemoveAfterWrite = true;
+	std::string S2 = str(
+		boost::format("#TMserver:%s:Disconnected for being idle. Please do not idle.\r\n") % Conn->User->Callsign);
+	const std::shared_ptr<std::basic_string<char>> Buff = std::make_shared<std::string>(S2);
+	auto Handler = boost::bind(&CClientServer::HandleWrite, shared_from_this(), Conn, Conn->User, Conn->User, Buff,
+	                           boost::asio::placeholders::error);
+	async_write(Conn->socket, boost::asio::buffer(*Buff), Handler);
+	Conn->bWantsToRemoveAfterWrite = true;
 }

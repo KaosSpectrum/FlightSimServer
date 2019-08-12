@@ -1,3 +1,10 @@
+// /*
+//  * (C)20192019 KaosSpectrum
+//  * 
+//  * Released under GPL v3 Licence.
+//  *
+//  * Do not remove this copyright!
+
 #pragma once
 #include "boost/asio.hpp"
 #include "boost/asio/ip/tcp.hpp"
@@ -18,7 +25,9 @@ class CClientServer : public boost::enable_shared_from_this<CClientServer>
 	using MsgBuffer = std::shared_ptr<std::string>;
 
 public:
-	CClientServer(const boost::shared_ptr<CCertificate> Certificate) : ClientIoService(), ClientAcceptor(ClientIoService), ClientConnections() 
+	CClientServer(const boost::shared_ptr<CCertificate> Certificate) : ClientIoService(),
+	                                                                   ClientAcceptor(ClientIoService),
+	                                                                   ClientConnections()
 	{
 		Certificates = Certificate;
 	}
@@ -28,7 +37,8 @@ public:
 	//Get the command in enum form, plus an out index for convienient string manip!
 	static EClientCommand GetCommand(const std::string& InString, int& OutCmdIndex);
 
-	void HandleRead(const con_handle_t& InConnectionHandle, boost::system::error_code const & InError, size_t InBytesTransferred);
+	void HandleRead(const con_handle_t& InConnectionHandle, boost::system::error_code const& InError,
+	                size_t InBytesTransferred);
 
 	//Parse the incoming line, grabbing what we need, and working out what command we should process!
 	void ParseIncomingLine(const con_handle_t& InConnectionHandle, const std::string& InLine);
@@ -39,15 +49,17 @@ public:
 	void AddController(const con_handle_t& InConnectionHandle, const StringVec& InControllerData);
 
 	//Show an error and disconnect them!
-	void ShowErrorAndDisconnect(const con_handle_t& InConnectionHandle, const std::string& Callsign, EClientError Error);
+	void ShowErrorAndDisconnect(const con_handle_t& InConnectionHandle, const std::string& Callsign,
+	                            EClientError Error);
 
 	void ProcessControllerPosition(const con_handle_t& InConnectionHandle, StringVec& PositionData);
 	void DoAsyncRead(const con_handle_t& InConnectionHandle);
 	void SendServerMessage(const con_handle_t& InConnectionHandle, CUser* InTargetUser, const std::string& InMessage);
-	void HandleWrite(const con_handle_t& InConnectionHandle, const MsgBuffer& MessageBuffer, boost::system::error_code const & Err);
+	void HandleWrite(const con_handle_t& InConnectionHandle, const MsgBuffer& MessageBuffer,
+	                 boost::system::error_code const& Err);
 	void HandleWrite(const con_handle_t& InConnectionHandle, CUser* SrcUser, CUser* TargetUser, const MsgBuffer&
 	                 InMessageBuffer, boost::system::error_code const& InError);
-	void HandleAccept(const con_handle_t& InConnectionHandle, boost::system::error_code const & Err);
+	void HandleAccept(const con_handle_t& InConnectionHandle, boost::system::error_code const& Err);
 	void HandleClientDisconnect(const con_handle_t& InConnectionHandle);
 	void StartAccept();
 	void Listen(uint16_t InListenPort);
@@ -57,9 +69,7 @@ public:
 
 	int CurrentClientIndex = 0;
 	boost::asio::io_service ClientIoService;
-	boost::asio::ip::tcp::acceptor ClientAcceptor;
+	tcp::acceptor ClientAcceptor;
 	std::list<SConnection> ClientConnections;
 	boost::weak_ptr<CCertificate> Certificates;
-
 };
-

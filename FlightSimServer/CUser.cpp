@@ -1,6 +1,12 @@
+// /*
+//  * (C)20192019 KaosSpectrum
+//  * 
+//  * Released under GPL v3 Licence.
+//  *
+//  * Do not remove this copyright!
+
 #include "CUser.h"
 #include "MathHelper.h"
-
 
 
 CUser::CUser() = default;
@@ -10,22 +16,18 @@ CUser::~CUser() = default;
 
 void CUser::UpdatePilot(const std::vector<std::string>& Data)
 {
-
 }
 
 void CUser::UpdateController(const std::vector<std::string>& Data)
 {
-
 }
 
 void CUser::HandleFlightPlan(const std::vector<std::string>& Data)
 {
-
 }
 
 void CUser::SetAlive()
 {
-
 }
 
 double CUser::GetDistance(CUser* OtherUser) const
@@ -77,4 +79,3 @@ int CUser::GetRange()
 
 	return 40;
 }
-

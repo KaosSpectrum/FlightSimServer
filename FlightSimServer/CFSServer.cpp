@@ -1,3 +1,10 @@
+// /*
+//  * (C)20192019 KaosSpectrum
+//  * 
+//  * Released under GPL v3 Licence.
+//  *
+//  * Do not remove this copyright!
+
 #include "CFSServer.h"
 #include "boost/make_shared.hpp"
 #include "CClientServer.h"

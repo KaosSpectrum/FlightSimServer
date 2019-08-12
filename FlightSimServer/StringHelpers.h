@@ -1,17 +1,25 @@
+// /*
+//  * (C)20192019 KaosSpectrum
+//  * 
+//  * Released under GPL v3 Licence.
+//  *
+//  * Do not remove this copyright!
+
 #pragma once
 #include "string"
 #include "vector"
-struct  SStringHelpers
+
+struct SStringHelpers
 {
 public:
 	// trim from start (in place)
-	static void Ltrim(std::string &S);
+	static void Ltrim(std::string& S);
 
 	// trim from end (in place)
-	static void Rtrim(std::string &S);
+	static void Rtrim(std::string& S);
 
 	// trim from both ends (in place)
-	static void Trim(std::string &S);
+	static void Trim(std::string& S);
 
 	//Find and replace all (in-place)
 	static void FindAndReplaceAll(std::string& Data, const std::string& ToSearch, const std::string& ReplaceStr);
@@ -27,4 +35,3 @@ public:
 	//Converts letter to alphanumeric
 	std::string LetterToPhonetic(const std::string& Letter);
 };
-

@@ -1,3 +1,10 @@
+// /*
+//  * (C)20192019 KaosSpectrum
+//  * 
+//  * Released under GPL v3 Licence.
+//  *
+//  * Do not remove this copyright!
+
 #pragma once
 #include "Enums.h"
 #include "FlightPlan.h"
@@ -26,7 +33,6 @@ public:
 	std::string IdentFlag;
 
 
-
 	double Lat{}, Lon{};
 
 	EFacilityType FacType;
@@ -42,4 +48,3 @@ public:
 	double GetDistance(CUser* OtherUser) const;
 	int GetRange();
 };
-

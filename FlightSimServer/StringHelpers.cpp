@@ -1,17 +1,26 @@
+// /*
+//  * (C)20192019 KaosSpectrum
+//  * 
+//  * Released under GPL v3 Licence.
+//  *
+//  * Do not remove this copyright!
+
 #include "StringHelpers.h"
 #include "algorithm"
 #include <cctype>
 
-void SStringHelpers::Ltrim(std::string &S)
+void SStringHelpers::Ltrim(std::string& S)
 {
-	S.erase(S.begin(), std::find_if(S.begin(), S.end(), [](const int Ch) {
+	S.erase(S.begin(), std::find_if(S.begin(), S.end(), [](const int Ch)
+	{
 		return !std::isspace(Ch);
 	}));
 }
 
-void SStringHelpers::Rtrim(std::string &S)
+void SStringHelpers::Rtrim(std::string& S)
 {
-	S.erase(std::find_if(S.rbegin(), S.rend(), [](const int Ch) {
+	S.erase(std::find_if(S.rbegin(), S.rend(), [](const int Ch)
+	{
 		return !std::isspace(Ch);
 	}).base(), S.end());
 }
@@ -36,14 +45,14 @@ void SStringHelpers::FindAndReplaceAll(std::string& Data, const std::string& ToS
 void SStringHelpers::ToUpper(std::string& InString)
 {
 	std::transform(InString.begin(), InString.end(), InString.begin(),
-		[](const unsigned char C) -> unsigned char { return std::toupper(C); });
+	               [](const unsigned char C) -> unsigned char { return std::toupper(C); });
 }
 
 std::string SStringHelpers::ToUpper(const std::string& InString)
 {
 	std::string ReturnStr;
 	std::transform(InString.begin(), InString.end(), ReturnStr.begin(),
-		[](const unsigned char C) -> unsigned char { return std::toupper(C); });
+	               [](const unsigned char C) -> unsigned char { return std::toupper(C); });
 	return ReturnStr;
 }
 

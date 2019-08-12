@@ -1,3 +1,10 @@
+// /*
+//  * (C)20192019 KaosSpectrum
+//  * 
+//  * Released under GPL v3 Licence.
+//  *
+//  * Do not remove this copyright!
+
 #pragma once
 
 enum class EClientCommand
@@ -63,7 +70,7 @@ enum class EConnectionType
 enum class EFacilityType
 {
 	NONE,
-	FSS, 
+	FSS,
 	DEL,
 	GND,
 	TWR,

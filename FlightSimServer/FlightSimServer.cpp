@@ -1,5 +1,10 @@
-// FlightSimServer.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
+// /*
+//  * (C)20192019 KaosSpectrum
+//  * 
+//  * Released under GPL v3 Licence.
+//  *
+//  * Do not remove this copyright!
+
 #include <cstring>
 #include <cstdio>
 #include <cstdlib>
@@ -27,7 +32,7 @@ void Run(const std::string& ConfigFile)
 int main(int Argc, char** Argv)
 {
 	const std::string Configfile = PATH_CONFIG_FILE;
-	
+
 	DoSignals();
 	Run(Configfile);
 }

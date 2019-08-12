@@ -1,3 +1,10 @@
+// /*
+//  * (C)20192019 KaosSpectrum
+//  * 
+//  * Released under GPL v3 Licence.
+//  *
+//  * Do not remove this copyright!
+
 #include "Certificate.h"
 #include "sqlite3.h"
 #include "iostream"
@@ -33,34 +40,32 @@ bool CCertificate::IsCertificateValid(const std::string& CID, const std::string 
 	{
 		return false;
 	}
-	else
+	if (Database)
 	{
+		char* ErrMsg = nullptr;
 
-		if (Database)
+		const std::string Query = str(
+			boost::format("SELECT * FROM Certificates WHERE CertID='%s' AND  Password='%s'") % std::stoi(CID) %
+			Password);
+
+		const int RC = sqlite3_exec(Database, Query.c_str(), ReadCallback, this, &ErrMsg);
+
+		if (RC != SQLITE_OK)
 		{
-			char* ErrMsg = nullptr;
-
-			const std::string Query = boost::str(boost::format("SELECT * FROM Certificates WHERE CertID='%s' AND  Password='%s'") % std::stoi(CID) % Password);
-
-			const int RC = sqlite3_exec(Database, Query.c_str(), CCertificate::ReadCallback, this, &ErrMsg);
-
-			if (RC != SQLITE_OK)
-			{
-				fprintf(stderr, "SQL error: %s\n", ErrMsg);
-				sqlite3_free(ErrMsg);
-			}
-
-			const bool bValid = bLastResultValid;
-			bLastResultValid = false;
-
-			sqlite3_close(Database);
-			return bValid;
+			fprintf(stderr, "SQL error: %s\n", ErrMsg);
+			sqlite3_free(ErrMsg);
 		}
+
+		const bool bValid = bLastResultValid;
+		bLastResultValid = false;
+
+		sqlite3_close(Database);
+		return bValid;
 	}
 	return false;
 }
 
-int CCertificate::ReadCallback(void *Data, int Argc, char **Argv, char **AzColName) 
+int CCertificate::ReadCallback(void* Data, int Argc, char** Argv, char** AzColName)
 {
 	CCertificate* Cert = static_cast<CCertificate*>(Data);
 	if (Cert)
@@ -69,5 +74,3 @@ int CCertificate::ReadCallback(void *Data, int Argc, char **Argv, char **AzColNa
 	}
 	return 0;
 }
-
-

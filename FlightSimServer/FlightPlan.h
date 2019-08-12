@@ -1,12 +1,22 @@
+// /*
+//  * (C)20192019 KaosSpectrum
+//  * 
+//  * Released under GPL v3 Licence.
+//  *
+//  * Do not remove this copyright!
+
 #pragma once
 #include "string"
 
 struct SFlightPlan
 {
 public:
-	SFlightPlan(const std::string& Callsign, int Revision, const std::string& Type, const std::string& Aircraft, int TasCruise, const std::string& DepAirport,
-				int DepTime, int ActualDepTime, const std::string& Altitude, const std::string& DestinationAirport, int EnrouteHours, int MinEnRoute,
-				int HoursFuel, int MinFuel, const std::string& AltAirport, const std::string& Remarks, const std::string& Route);
+	SFlightPlan(const std::string& Callsign, int Revision, const std::string& Type, const std::string& Aircraft,
+	            int TasCruise, const std::string& DepAirport,
+	            int DepTime, int ActualDepTime, const std::string& Altitude, const std::string& DestinationAirport,
+	            int EnrouteHours, int MinEnRoute,
+	            int HoursFuel, int MinFuel, const std::string& AltAirport, const std::string& Remarks,
+	            const std::string& Route);
 
 	SFlightPlan() = default;
 
@@ -27,6 +37,4 @@ public:
 	std::string m_AltAiport;
 	std::string m_Remarks;
 	std::string m_Route;
-
 };
-
